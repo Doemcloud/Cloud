@@ -1,0 +1,162 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Starred Files</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #1c1c1e;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #2c2c2e;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar h2 {
+            color: #fff;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            margin-bottom: 20px;
+        }
+
+        .sidebar ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar ul li a i {
+            margin-right: 10px;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+            background-color: #1c1c1e;
+        }
+
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .main-header h1 {
+            font-size: 28px;
+            margin: 0;
+        }
+
+        .recent-files {
+            margin-top: 40px;
+        }
+
+        .recent-files table {
+            width: 100%;
+            background-color: #2c2c2e;
+            border-collapse: collapse;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .recent-files th, .recent-files td {
+            padding: 15px;
+            text-align: left;
+        }
+
+        .recent-files th {
+            background-color: #3b82f6;
+        }
+
+        .recent-files tr:nth-child(even) {
+            background-color: #333;
+        }
+
+        .recent-files td {
+            vertical-align: middle;
+        }
+
+        .btn-download {
+            display: block;
+            text-align: center;
+            padding: 10px 20px;
+            background-color: #3b82f6;
+            border-radius: 5px;
+            color: white;
+            text-decoration: none;
+            width: 120px;
+            margin: 0 auto;
+        }
+
+        .btn-download:hover {
+            background-color: #2b6cb6;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <h2>{{ current_user.display_name }}</h2>
+        <ul>
+            <li><a href="/files"><i class="fas fa-cloud"></i> My Cloud</a></li>
+            <li><a href="/shared"><i class="fas fa-share-alt"></i> Shared Files</a></li>
+            <li><a href="/starred"><i class="fas fa-star"></i> Starred</a></li>
+            <li><a href="/recycle"><i class="fas fa-trash-alt"></i> Recycle Bin</a></li>
+            <li><a href="/settings"><i class="fas fa-cog"></i> Settings</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <div class="main-header">
+            <h1>Starred Files</h1>
+        </div>
+
+        <div class="recent-files">
+            <h2>Your Starred Files</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Date Uploaded</th>
+                        <th>Download</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for file in files %}
+                    <tr>
+                        <td>{{ file.original_filename }}</td>
+                        <td>{{ file.created_at.strftime('%b %d, %Y') }}</td>
+                        <td><a href="/download/{{ file.filename }}" class="btn-download">Download</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</body>
+
+</html>

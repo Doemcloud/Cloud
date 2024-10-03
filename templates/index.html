@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Облако 922</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <section>
+        <!-- Блок для логина -->
+        <div class="login-box" id="login-box">
+            <form action="{{ url_for('login_form') }}" method="POST">
+                <h2>922</h2>
+
+                <!-- Вывод сообщений -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                  {% if messages %}
+                    <div class="messages">
+                      {% for category, message in messages %}
+                        <div class="{{ category }}">{{ message }}</div>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                {% endwith %}
+
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="mail"></ion-icon></span>
+                    <input type="text" required name="username" id="input-box-1">
+                    <label for="input-box-1">Логин</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
+                    <input type="password" required name="password" id="input-box-2">
+                    <label for="input-box-2">Пароль</label>
+                </div>
+                <div class="remember-forget">
+                    <label for="input-box-3"><input type="checkbox" name="remember" id="input-box-3">Запомнить меня</label>
+                    <a href="#">Забыли пароль?</a>
+                </div>
+                <button type="submit">ВОЙТИ</button>
+                <div class="register-link">
+                    <p>Нет аккаунта? <a href="#" onclick="showRegisterForm()">Регистрация</a></p>
+                </div>
+
+                <!-- Сообщение об ошибке -->
+                {% if error %}
+                <div style="color: red; font-size: 14px;">
+                    {{ error }}
+                </div>
+                {% endif %}
+            </form>
+        </div>
+
+        <!-- Блок для регистрации, скрыт по умолчанию -->
+        <div class="register-box" id="register-box" style="display: none;">
+            <form action="{{ url_for('register') }}" method="POST">
+                <h2>Регистрация</h2>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="person"></ion-icon></span>
+                    <input type="text" required name="username" id="register-username">
+                    <label for="register-username">Логин</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
+                    <input type="password" required name="password" id="register-password">
+                    <label for="register-password">Пароль</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="person-circle"></ion-icon></span>
+                    <input type="text" required name="display_name" id="register-display-name">
+                    <label for="register-display-name">Отображаемое имя</label>
+                </div>
+                <button type="submit">ЗАРЕГИСТРИРОВАТЬСЯ</button>
+                <div class="register-link">
+                    <p>Уже есть аккаунт? <a href="#" onclick="showLoginForm()">Войти</a></p>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+    <!-- Скрипт для переключения между формами -->
+    <script>
+        function showRegisterForm() {
+            document.getElementById('login-box').style.display = 'none';
+            document.getElementById('register-box').style.display = 'block';
+        }
+
+        function showLoginForm() {
+            document.getElementById('login-box').style.display = 'block';
+            document.getElementById('register-box').style.display = 'none';
+        }
+    </script>
+</body>
+
+</html>

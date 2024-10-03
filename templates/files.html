@@ -1,0 +1,282 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Cloud</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #1c1c1e;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #2c2c2e;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar h2 {
+            color: #fff;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            margin-bottom: 20px;
+        }
+
+        .sidebar ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar ul li a i {
+            margin-right: 10px;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+            background-color: #1c1c1e;
+        }
+
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .main-header h1 {
+            font-size: 28px;
+            margin: 0;
+        }
+
+        .add-files-btn {
+            background-color: #3b82f6;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .recent-files {
+            margin-top: 40px;
+        }
+
+        .recent-files table {
+            width: 100%;
+            background-color: #2c2c2e;
+            border-collapse: collapse;
+            border-radius: 10px;
+            overflow: visible;
+        }
+
+        .recent-files th, .recent-files td {
+            padding: 15px;
+            text-align: left;
+        }
+
+        .recent-files th {
+            background-color: #3b82f6;
+        }
+
+        .recent-files tr:nth-child(even) {
+            background-color: #333;
+        }
+
+        .recent-files td {
+            vertical-align: middle;
+            position: relative;
+        }
+
+        .btn-download {
+            display: inline-block;
+            text-align: center;
+            padding: 8px 16px;
+            background-color: #3b82f6;
+            border-radius: 5px;
+            color: white;
+            text-decoration: none;
+            margin-right: 10px;
+        }
+
+        .btn-download:hover {
+            background-color: #2b6cb6;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #2c2c2e;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            right: 0;
+        }
+
+        .dropdown-content a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #575757;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-btn {
+            background-color: transparent;
+            color: white;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* Исправление выпадающего списка */
+        .dropdown-content {
+            right: 0;
+            z-index: 1000; /* Задает высший приоритет отображения */
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <h2>{{ current_user.display_name }}</h2>
+        <ul>
+            <li><a href="{{ url_for('file_list') }}">My Cloud</a></li>
+            <li><a href="{{ url_for('shared_files') }}">Shared Files</a></li>
+            <li><a href="{{ url_for('starred_files') }}">Starred</a></li>
+            <li><a href="{{ url_for('recycle_bin') }}">Recycle Bin</a></li>
+            <li><a href="{{ url_for('settings') }}">Settings</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <div class="main-header">
+            <h1>My Cloud</h1>
+
+            <input type="file" id="fileInput" style="display: none;">
+            <button class="add-files-btn" onclick="document.getElementById('fileInput').click()">Add Files</button>
+        </div>
+
+        <div class="recent-files">
+            <h2>Recent Added</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Date Uploaded</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for file in files %}
+                    <tr>
+                        <td>{{ file.original_filename }}</td> <!-- Оригинальное имя файла -->
+                        <td>{{ file.created_at.strftime('%b %d, %Y') }}</td> <!-- Дата загрузки -->
+                        <td>
+                            <a href="/download/{{ file.filename }}" class="btn-download">Download</a>
+
+                            <!-- Выпадающее меню "три точки" -->
+                            <div class="dropdown">
+                                <button class="dropdown-btn">...</button>
+                                <div class="dropdown-content">
+                                    <a href="/file/share/{{ file.id }}">Поделиться</a>
+                                    <a href="/file/delete/{{ file.id }}">Удалить</a>
+                                    <a href="/file/star/{{ file.id }}">Избранное</a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            const formData = new FormData();
+            formData.append('file', event.target.files[0]);
+
+            fetch('/api/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.msg === 'File uploaded successfully') {
+                    alert('File uploaded successfully!');
+                    updateFileList();  // Обновляем список файлов без перезагрузки страницы
+                }
+            })
+            .catch(error => console.error('Error uploading file:', error));
+        });
+
+        // Функция для обновления списка файлов
+        function updateFileList() {
+            fetch('/api/files', {  // API для получения обновленного списка файлов
+                method: 'GET'
+            })
+            .then(response => response.json())
+            .then(data => {
+                const fileList = document.getElementById('file-list');
+                fileList.innerHTML = '';  // Очищаем старый список
+
+                data.files.forEach(file => {
+                    const row = `<tr>
+                                    <td>${file.original_filename}</td>
+                                    <td>${file.created_at}</td>
+                                    <td><a href="/download/${file.filename}" class="btn-download">Download</a>
+                                        <div class="dropdown">
+                                            <button class="dropdown-btn">...</button>
+                                            <div class="dropdown-content">
+                                                <a href="/file/share/${file.id}">Поделиться</a>
+                                                <a href="/file/remove/${file.id}" onclick="return confirm('Удалить файл?')">Удалить</a>
+                                                <a href="/file/star/${file.id}">Избранное</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>`;
+                    fileList.insertAdjacentHTML('beforeend', row);  // Добавляем новую строку для каждого файла
+                });
+            })
+            .catch(error => console.error('Error fetching file list:', error));
+        }
+    </script>
+
+</body>
+
+</html>
